@@ -14,9 +14,27 @@ app.set('view engine', 'html');
 app.engine('html', nunjucks.render);
 var env = nunjucks.configure('views', {noCache: true});
 
-app.use(function(err, req, res, next){
-    console.log(err.stack);
-    res.status(500).send(err.message)
+app.get('/', function (req, res) {
+   res.send('hello world');
+});
+
+// catch 404 (i.e., no route was hit) and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('++++++Page Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// handle all errors (anything passed into `next()`)
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  console.error(err);
+  if (err.status === 404) {
+  	res.send(err.message);
+  } else {
+  	res.send("some other error occured");
+  }
+  
 });
 
 
